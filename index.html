@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="RedlineMD website redesign: a case study by Clara Ferreira, Product Designer.">
+<title>RedlineMD Case Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&family=Tinos:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: Clara's portfolio case format. Wide frame, nav left, reading column in the right half; figures break out wide. Single navy theme, matching the portfolio. */
+:root{
+  --navy:#1E375C;       /* page */
+  --panel:#181E2E;      /* buttons, frames */
+  --text:#EEEEEE;
+  --muted:#B9C4D4;
+  --rule:rgba(238,238,238,.22);
+  --serif:"Tinos","Times New Roman",Times,serif;
+  --mono:"Fira Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--navy);color:var(--text)}
+body{font-family:var(--mono);font-size:13px;line-height:1.65;margin:0}
+a{color:var(--text)}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:clamp(32px,4.2vw,46px);line-height:1.03;letter-spacing:-.01em}
+h2{font-size:clamp(28px,3vw,36px);line-height:1.1;letter-spacing:-.01em}
+h3{font-size:clamp(22px,2.4vw,28px);line-height:1.15}
+p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+p b,li b{color:var(--text);font-weight:500}
+:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+
+.frame{max-width:1440px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+@media(min-width:900px){.frame{padding-left:max(10%,env(safe-area-inset-left,0px));padding-right:max(10%,env(safe-area-inset-right,0px))}}
+
+nav{display:flex;gap:28px;padding-block:20px;font-size:12px}
+nav a{text-decoration:none}
+nav a:hover{text-decoration:underline}
+
+/* reading column sits in the right half on wide screens */
+.col{display:grid;gap:16px;max-width:440px}
+@media(min-width:900px){.col{margin-left:50%}}
+section{padding-block:56px}
+
+.title{padding-block:40px 48px;display:grid;gap:22px}
+.back{font-size:12px;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--text)}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;padding-top:22px;border-top:1px solid var(--rule);font-size:12px;max-width:none}
+@media(min-width:900px){.title .col{max-width:none;width:50%}}
+.meta dt{color:var(--muted)}
+.meta dd{margin:2px 0 0}
+
+.stats{display:grid;gap:28px;border-top:1px solid var(--rule);padding-block:40px 24px}
+@media(min-width:700px){.stats{grid-template-columns:repeat(3,1fr)}}
+.stat b{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(44px,5vw,58px);line-height:1;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:10px;font-size:12px;color:var(--muted);max-width:24ch}
+
+/* Try it */
+.try{text-align:center;display:grid;justify-items:center;gap:14px}
+.try p{max-width:44ch;font-size:13px}
+.toggle{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--rule);border-radius:8px;margin-top:6px}
+.toggle button{font:inherit;font-size:12px;color:var(--text);background:transparent;border:0;border-radius:5px;padding:7px 14px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--panel)}
+.stage{width:100%;margin-top:18px;display:flex;justify-content:center}
+.device{width:100%;max-width:1218px;height:760px;background:var(--panel);border-radius:10px;overflow:hidden;border:1px solid #2B3A55;transition:max-width .3s,height .3s,border-radius .3s}
+.device.mobile{max-width:402px;height:820px;border-radius:38px;border:8px solid var(--panel)}
+.device iframe{width:100%;height:100%;border:0;background:#fff;display:block}
+.openlink{font-size:12px;color:var(--muted)}
+@media(max-width:699px){.device{height:640px}.toggle{display:none}}
+
+/* Pull line */
+.pull{text-align:center;display:grid;gap:12px;justify-items:center;padding-block:72px}
+.pull h2{font-size:clamp(28px,3.4vw,40px);color:#D6DEEA}
+.pull p{max-width:40ch;font-size:12px}
+
+/* Numbered steps (a real sequence) */
+.steps{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:14px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:34px 1fr;gap:8px;color:var(--muted);font-size:13px;counter-increment:s}
+.steps li::before{content:"0" counter(s);color:var(--text)}
+
+/* Findings */
+.findings{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:18px}
+.findings li{display:grid;gap:4px;padding-top:14px;border-top:1px solid var(--rule);color:var(--muted);font-size:13px}
+
+/* Figures */
+figure{margin:0;display:grid;gap:10px}
+figcaption{font-size:12px;color:var(--muted)}
+.wide{margin-block:40px}
+.wide img{border-radius:10px;width:100%}
+.pair{display:grid;gap:20px;margin-block:40px}
+@media(min-width:700px){.pair{grid-template-columns:1fr 1fr;align-items:start}}
+.pair.phones{max-width:860px;margin-inline:auto}
+.phone img{border-radius:28px;border:6px solid var(--panel)}
+.pair img{border-radius:10px}
+
+/* Hypotheses block */
+.hyp{display:grid;gap:10px}
+.hyp .n{font-size:12px;color:var(--muted)}
+.signal{margin-top:6px;padding:12px 14px;border-left:2px solid var(--text);background:rgba(24,30,46,.45);font-size:12px;color:var(--muted)}
+.signal b{display:block;font-family:var(--serif);font-weight:400;font-size:22px;color:var(--text);margin-bottom:2px}
+
+/* Metrics table */
+.mtable{width:100%;border-collapse:collapse;font-size:12px}
+.mtable th,.mtable td{text-align:left;padding:12px 10px 12px 0;border-top:1px solid var(--rule);vertical-align:top}
+.mtable th{font-weight:400;color:var(--muted)}
+.scroll{overflow-x:auto}
+
+/* Rules */
+.rules{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:14px;counter-reset:r}
+.rules li{display:grid;grid-template-columns:34px 1fr;gap:8px;color:var(--muted);counter-increment:r}
+.rules li::before{content:"0" counter(r);color:var(--text)}
+
+/* End + contact */
+.end{border-top:1px solid var(--rule);padding-block:56px;display:grid;gap:22px}
+.end .col{max-width:none}
+@media(min-width:900px){.end .col{width:50%}}
+footer{border-top:1px solid var(--rule);padding-block:40px 64px;display:grid;gap:12px;font-size:12px}
+footer .row{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+.copy{font:inherit;font-size:12px;color:var(--text);background:var(--panel);border:0;border-radius:6px;padding:7px 12px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <nav aria-label="Portfolio">
+    <a href="https://claraferreira-portfolio.vercel.app/">Clara Ferreira</a>
+    <a href="https://claraferreira-portfolio.vercel.app/#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <header class="title">
+    <div class="col" style="gap:22px">
+      <a class="back" href="https://claraferreira-portfolio.vercel.app/">← All projects</a>
+      <h1>A $199 contract review that new doctors can buy from their phone</h1>
+      <dl class="meta">
+        <div><dt>Role</dt><dd>Product Designer</dd></div>
+        <div><dt>Context</dt><dd>Foundey design challenge, RedlineMD website redesign</dd></div>
+        <div><dt>Platform</dt><dd>Ad landing page and upload flow, mobile first</dd></div>
+        <div><dt>Status</dt><dd>Concept, October 2026</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <div class="stats" aria-label="Starting point">
+    <div class="stat"><b>35%</b><span>of traffic arrives on mobile</span></div>
+    <div class="stat"><b>&lt;10%</b><span>of revenue comes from mobile</span></div>
+    <div class="stat"><b>3.5</b><span>phone screens between the only two buy buttons</span></div>
+  </div>
+
+  <section class="try" aria-labelledby="try-t">
+    <h2 id="try-t">Try the redesign</h2>
+    <p>Scroll the landing page, watch the review demo, then upload a sample contract and go through checkout. Names, partners and testimonials in the prototype are fictional.</p>
+    <div class="toggle" role="group" aria-label="Preview size">
+      <button type="button" id="b-desk" aria-pressed="true">Desktop</button>
+      <button type="button" id="b-mob" aria-pressed="false">Mobile</button>
+    </div>
+    <div class="stage">
+      <div class="device" id="device"><iframe src="prototype.html" title="RedlineMD redesign prototype" loading="lazy"></iframe></div>
+    </div>
+    <a class="openlink" href="prototype.html" target="_blank" rel="noopener">Open the prototype in its own tab</a>
+  </section>
+
+  <section>
+    <div class="col">
+      <h2>My role</h2>
+      <p>This was a one-day design challenge. I audited the live site, set the hypotheses, and made the design decisions: structure, hierarchy, the buy flow and the visual direction.</p>
+      <p>The interactive prototype was built with AI, from my designs and direction.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <h2>The problem</h2>
+      <p>RedlineMD sells an AI contract review to doctors signing their first job contract, for $199 instead of $500+ for an attorney. Most visitors come from Google Ads. A third of them arrive on a phone, but almost all the revenue comes from desktop.</p>
+      <p>Someone who clicked an ad usually has a contract in hand and a deadline. The page has one job: get them from that click to an uploaded, paid review.</p>
+    </div>
+  </section>
+
+  <div class="pull">
+    <h2>The ad buys the click. The page has to sell the review.</h2>
+    <p>On mobile, the current page was losing that sale before most visitors reached a button.</p>
+  </div>
+
+  <section>
+    <div class="col">
+      <h2>How I built it</h2>
+      <ol class="steps">
+        <li><span><b>Audit.</b> I went through the live site as a doctor coming from an ad, on phone and desktop.</span></li>
+        <li><span><b>Hypotheses.</b> I turned the findings into two testable reasons mobile wasn't converting.</span></li>
+        <li><span><b>Decisions.</b> Hero, buy button, proof, comparison and the upload flow, each tied to a finding.</span></li>
+        <li><span><b>Prototype.</b> A working page and checkout, to test on real phones.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <h2>What I found</h2>
+      <ul class="findings">
+        <li><b>Only two ways to buy on mobile.</b> One in the hero, the next about 3.5 screens down. The top bar scrolls away on phones, so in between there's no way to act.</li>
+        <li><b>A menu with one button in it.</b> The mobile menu icon opens a screen whose only item is "Get your Analysis". An extra tap to find the main action.</li>
+        <li><b>The button leaves the brand.</b> Every buy button opens a generic Google Form, a weak handoff for a product asking doctors to trust it with a legal document.</li>
+        <li><b>Numbers without context.</b> "$10,000" saved, compared to what? "$50,000" in another section. The $199 vs. $500+ comparison and tail insurance, the strongest arguments, don't appear at all.</li>
+        <li><b>No one stands behind it.</b> No testimonials, no partners, no contact, and a footer with no terms or address.</li>
+        <li><b>Heavy hierarchy, too much text.</b> Title and subtitle compete, and the product is shown as static screenshots instead of working.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="pair">
+    <figure><img src="img/before-hero.jpg" alt="Current RedlineMD hero with a yellow Get your Analysis button and a static product screenshot" loading="lazy"><figcaption>Fig. A: The current hero. The product is a static screenshot.</figcaption></figure>
+    <figure><img src="img/before-stats.jpg" alt="Current RedlineMD stats row: 30% salary, $10,000 save cost, 3,000+ contracts" loading="lazy"><figcaption>Fig. B: Big numbers, no comparison. Saved against what?</figcaption></figure>
+  </div>
+
+  <section>
+    <div class="col">
+      <h2>Two hypotheses worth testing</h2>
+      <p>Without analytics access, I didn't want to redesign around a guess. The audit pointed to two different places mobile could be losing people, and each one shows up in a different number.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="col hyp">
+      <span class="n">01</span>
+      <h3>Mobile visitors never reach a way to buy</h3>
+      <p>The buy button disappears for most of the page, and the one in the menu is hidden behind a tap.</p>
+      <div class="signal"><b>Mobile CTA tap rate</b>Share of mobile visitors who tap any buy button, compared with desktop.</div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="col hyp">
+      <span class="n">02</span>
+      <h3>They reach it, then drop at the form</h3>
+      <p>If tap rate is normal but sales aren't, the leak is after the click, in the Google Form.</p>
+      <div class="signal"><b>Upload and payment completion</b>Share of people who start the flow and finish each step.</div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="col">
+      <p>Above both sits the number the business cares about: <b>mobile conversion rate</b>, from ad click to paid review. The redesign addresses both hypotheses, and the two signals say which one moved it.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <h3>Price against the alternative, in the headline</h3>
+      <p>$199 alone reads as a number. Next to a $500+ attorney and a $10,000+ tail insurance bill, it reads as a bargain. The headline carries the comparison, and a price ladder beside it makes the ROI visible before any scrolling.</p>
+    </div>
+  </section>
+
+  <figure class="wide"><img src="img/d-hero.jpg" alt="Redesigned desktop hero: Your physician contract, reviewed for $199. Not $500+, with a price ladder" loading="lazy"><figcaption>Fig. C: The hero states the price against the two alternatives.</figcaption></figure>
+
+  <section>
+    <div class="col">
+      <h3>A buy button in the thumb zone</h3>
+      <p>My first instinct was the right corner, for right-handed users. Thumb-zone research changed my mind: the top corners are among the hardest places to reach, and the bottom center is the easiest.</p>
+      <p>So on mobile, a full-width bar appears at the bottom once the hero button scrolls away, and hides at the final call to action. The menu icon is gone: with one action, there's nothing to put in a menu.</p>
+    </div>
+  </section>
+
+  <div class="pair phones">
+    <figure class="phone"><img src="img/m-hero.jpg" alt="Mobile hero of the redesign" loading="lazy"><figcaption>Fig. D: Mobile hero, with the main action full width.</figcaption></figure>
+    <figure class="phone"><img src="img/m-sticky.jpg" alt="Mobile comparison section with sticky bottom bar showing $199 flat and Upload contract" loading="lazy"><figcaption>Fig. E: The sticky bar keeps the price and the action within reach.</figcaption></figure>
+  </div>
+
+  <section>
+    <div class="col">
+      <h3>Show the product working</h3>
+      <p>Static screenshots ask doctors to imagine the value. I replaced them with a looping demo: a contract is uploaded, risky clauses are flagged with what they could cost, and suggested redlines appear. Tapping a step jumps to it.</p>
+    </div>
+  </section>
+
+  <figure class="wide"><img src="img/d-demo.jpg" alt="Demo section showing a contract with tail coverage and non-compete clauses redlined, and risk notes" loading="lazy"><figcaption>Fig. F: Red marks risk, green marks the fix, in the language of a redline.</figcaption></figure>
+
+  <section>
+    <div class="col">
+      <h3>Three ways to handle your contract</h3>
+      <p>The ROI story becomes a side-by-side choice: RedlineMD, an attorney, or signing as-is. Signing as-is costs $0 today and often $10,000+ later. A short note explains tail insurance, since many new doctors only learn about it when they resign.</p>
+    </div>
+  </section>
+
+  <figure class="wide"><img src="img/d-compare.jpg" alt="Comparison of RedlineMD at $199, attorney review at $500+, and signing as-is at $0 today" loading="lazy"><figcaption>Fig. G: The comparison, with tail insurance explained underneath.</figcaption></figure>
+
+  <section>
+    <div class="col">
+      <h3>Proof in the order a doctor needs it</h3>
+      <p>Trust has to come from someone other than RedlineMD. I ranked it: partners first, then testimonials with specialties and concrete outcomes, then an easy way to reach the team, with a one-hour reply. The footer now carries terms, privacy and an address.</p>
+    </div>
+  </section>
+
+  <figure class="wide"><img src="img/d-quotes.jpg" alt="Three doctor testimonials with outcomes such as non-compete cut from 25 to 10 miles" loading="lazy"><figcaption>Fig. H: Testimonials lead with outcomes. All names are fictional.</figcaption></figure>
+
+  <section>
+    <div class="col">
+      <h3>Answer the doubts before the upload</h3>
+      <p>Before uploading a legal document, a doctor will ask: can I trust an AI with this, who sees my contract, is this legal advice, and what if it doesn't help? The FAQ answers each one on the page, so those questions don't become reasons to leave.</p>
+    </div>
+  </section>
+
+  <figure class="wide"><img src="img/d-faq.jpg" alt="FAQ section with questions about AI trust, privacy, legal advice, pricing and refunds" loading="lazy"><figcaption>Fig. I: The objections a doctor has before uploading, answered in place.</figcaption></figure>
+
+  <section>
+    <div class="col">
+      <h3>Upload before paying</h3>
+      <p>The Google Form became a dedicated flow. Doctors upload first and see a preview of their own contract, next to what the report will include. Payment comes only after that, when they know exactly what they're buying.</p>
+      <p>I kept it to three fields: email, specialty, and an optional sign-by date.</p>
+    </div>
+  </section>
+
+  <div class="pair phones">
+    <figure class="phone"><img src="img/m-upload.jpg" alt="Upload step with a preview of the contract" loading="lazy"><figcaption>Fig. J: Upload and preview, with the benefits repeated.</figcaption></figure>
+    <figure class="phone"><img src="img/m-pay.jpg" alt="Details and payment step with email, specialty and sign-by date" loading="lazy"><figcaption>Fig. K: Three fields, then pay. Actions stay at the bottom.</figcaption></figure>
+  </div>
+
+  <section>
+    <div class="col">
+      <h2>How I'd measure it</h2>
+      <div class="scroll">
+        <table class="mtable">
+          <tr><th>Primary</th><td>Mobile conversion rate, ad click to paid review</td></tr>
+          <tr><th>Hypothesis 01</th><td>Mobile CTA tap rate vs. desktop</td></tr>
+          <tr><th>Hypothesis 02</th><td>Completion of upload, details and payment steps</td></tr>
+          <tr><th>Before launch</th><td>Task success in a usability test with doctors on mobile: "get your contract reviewed"</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <h2>If I only had an hour</h2>
+      <p>The challenge was timeboxed to one hour. With only that, I'd ship in this order:</p>
+      <ol class="steps">
+        <li><span><b>The buy button.</b> The sticky thumb-zone bar and no mobile menu. It goes straight at the biggest gap I found, and it's the fastest to measure.</span></li>
+        <li><span><b>The numbers.</b> Rewriting the data so every figure has a comparison behind it.</span></li>
+        <li><span><b>Testimonials and footer.</b> Proof from someone other than RedlineMD, plus terms, privacy and an address.</span></li>
+        <li><span><b>The FAQ.</b> Answering the doubts a doctor has before uploading.</span></li>
+        <li><span><b>The demo animation.</b> Showing the product instead of screenshots.</span></li>
+        <li><span><b>The rest.</b> Headline hierarchy, partners and visual polish.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <h2>Small rules that kept it consistent</h2>
+      <ol class="rules">
+        <li><span><b>Color has a job.</b> Blue is for actions. Brand red only marks risk, and green only marks fixes, like a real redline.</span></li>
+        <li><span><b>One action, one name.</b> "Upload your contract" everywhere, so the next step is never in doubt.</span></li>
+        <li><span><b>Actions live at the bottom on mobile.</b> On the landing page and in every step of the flow.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="end">
+    <div class="col">
+      <h2>RedlineMD website redesign</h2>
+      <a class="back" href="https://claraferreira-portfolio.vercel.app/">← All projects</a>
+    </div>
+  </div>
+
+  <footer id="contact">
+    <h2 style="font-size:28px">Clara Ferreira</h2>
+    <p style="font-size:12px">João Pessoa, Brazil. Working remotely with US teams.</p>
+    <div class="row">
+      <span id="mail">claraferreira.pd@gmail.com</span>
+      <button class="copy" type="button" id="copy">Copy email</button>
+      <a href="https://linkedin.com/in/clara-ferreira-santana" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://claraferreira-portfolio.vercel.app/" target="_blank" rel="noopener">Portfolio</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const dev = document.getElementById('device'), d = document.getElementById('b-desk'), m = document.getElementById('b-mob');
+  const set = mob => { dev.classList.toggle('mobile', mob); d.setAttribute('aria-pressed', !mob); m.setAttribute('aria-pressed', mob); };
+  d.addEventListener('click', () => set(false));
+  m.addEventListener('click', () => set(true));
+  const c = document.getElementById('copy');
+  c.addEventListener('click', () => {
+    const done = () => { c.textContent = 'Copied'; setTimeout(() => c.textContent = 'Copy email', 1600); };
+    const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('mail')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText('claraferreira.pd@gmail.com').then(done, sel); } catch (e) { sel(); }
+  });
+})();
+</script>
+
+</body>
+</html>
